@@ -1,21 +1,28 @@
 from get_data import get_train_val 
 from build_model import load_model, build_model
-from plot_model import plot_model
-import matplotlib.pyplot as plt  
+from analyse_data import plot_model
+from analyse_data import print_performance
+from analyse_data import visualize_predictions
+import os  
 
 x_train, y_train, x_val, y_val = get_train_val()
+labels = ['blue', 'fail', 'red', 'white']
 
-#model,history = build_model(x_train, y_train, x_val, y_val, ['blue', 'fail', 'red', 'white'], 'first_ever_model')
+name = 'Model7'
 
-model,history = load_model('first_ever_model')
+base_dir = os.getcwd()
+file_path = os.path.join(base_dir, "models", f"{name}.keras")
+
+if os.path.isfile(file_path):
+    model,history = load_model(name)
+else:
+    model,history = build_model(x_train, y_train, x_val, y_val, ['blue', 'fail', 'red', 'white'], name)
+    history = history.history
+
 model.summary()
 
-train_score = model.evaluate(x_train, y_train,verbose = 0)
-val_score = model.evaluate(x_val, y_val,verbose = 0)
+print_performance(model, y_val, y_train, x_val, x_train, labels)
 
-print(f"Training accuracy: {train_score[1]:.2f}")
-print(f"Validation accuracy: {val_score[1]:.2f}")
+visualize_predictions(model, x_val, y_val, labels)
 
 plot_model(history)
-
-

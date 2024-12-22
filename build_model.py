@@ -1,5 +1,6 @@
 import os 
 import tensorflow as tf
+from tensorflow.keras import regularizers
 import numpy as np
 import random
 import pickle
@@ -28,34 +29,23 @@ def add_layers(model, input_shape, num_classes):
     """
     model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+
     model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+
     model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+    model.add(tf.keras.layers.Dropout(0.5))
+
+    model.add(tf.keras.layers.Conv2D(128, (5, 5), activation='relu'))
+    model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation='relu'))
     model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))
     
 
     return model
-
-def scheduler(epoch, lr):
-    """
-    Learning rate scheduler function.
-
-    Arguments:
-    epoch -- the current training epoch number.
-    lr -- the current learning rate.
-
-    Returns:
-    updated_lr -- the updated learning rate for the next epoch.
-    For the first 9 epochs: no changes
-    Epoch >= 10: reduce learning rate every epoch by 10%
-    """
-
-    if epoch < 9:
-        return lr
-    else:
-        return lr * 0.9
     
 def save_model(model,history,name):
     """
@@ -90,10 +80,23 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
 
     loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
     model.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
-    r_scheduler = tf.keras.callbacks.LearningRateScheduler(scheduler)
     set_seed()
 
-    history = model.fit(x=x_train, y=y_train, validation_data=(x_val, y_val), epochs=11, callbacks=[r_scheduler], batch_size=64)
+    # Data augmentation
+    datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+        rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
+        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+        horizontal_flip=True,  # randomly flip images
+        vertical_flip=False)  # don't randomly flip images vertically
+
+    # Fit the augmentation model to the data
+    datagen.fit(x_train)
+    early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=10,restore_best_weights=True)
+    lr_reduction_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(
+    monitor='val_accuracy', patience=3, verbose=1, factor=0.7, min_lr=0.000001)
+
+    history = model.fit(x=x_train, y=y_train, validation_data=(x_val, y_val), epochs=100, callbacks=[lr_reduction_on_plateau, early_stopper], batch_size=64)
     save_model(model, history, name)
 
     return model, history
