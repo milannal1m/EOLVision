@@ -8,7 +8,7 @@ import os
 x_train, y_train, x_val, y_val = get_train_val()
 labels = ['blue', 'fail', 'red', 'white']
 
-name = 'Model7'
+name = 'Model14'
 
 base_dir = os.getcwd()
 file_path = os.path.join(base_dir, "models", f"{name}.keras")

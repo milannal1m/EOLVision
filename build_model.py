@@ -30,15 +30,16 @@ def add_layers(model, input_shape, num_classes):
     model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
 
-    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu'))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
 
     model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    model.add(tf.keras.layers.Dropout(0.5))
+    model.add(tf.keras.layers.Dropout(0.20))
 
-    model.add(tf.keras.layers.Conv2D(128, (5, 5), activation='relu'))
+    model.add(tf.keras.layers.Conv2D(128, (5, 5), kernel_regularizer=regularizers.l2(0.025)))  
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+    model.add(tf.keras.layers.Dropout(0.30))
 
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation='relu'))
@@ -79,7 +80,7 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
     model = add_layers(model, x_train.shape[1:], len(labels))
 
     loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
-    model.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0006), loss=loss_fn, metrics=['accuracy'])
     set_seed()
 
     # Data augmentation
@@ -92,7 +93,7 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
 
     # Fit the augmentation model to the data
     datagen.fit(x_train)
-    early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=10,restore_best_weights=True)
+    early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15,restore_best_weights=True)
     lr_reduction_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(
     monitor='val_accuracy', patience=3, verbose=1, factor=0.7, min_lr=0.000001)
 

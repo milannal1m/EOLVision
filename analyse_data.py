@@ -69,8 +69,8 @@ def print_performance(model, y_val, y_train, x_val, x_train, labels):
     train_score = model.evaluate(x_train, y_train,verbose = 0)
     val_score = model.evaluate(x_val, y_val,verbose = 0)
 
-    print(f"Training accuracy: {train_score[1]:.2f}")
-    print(f"Validation accuracy: {val_score[1]:.2f}")
+    print(f"\nTraining accuracy: {train_score[1]:.2f}")
+    print(f"Validation accuracy: {val_score[1]:.2f}\n")
 
     y_pred_string , y_val_string = format_data(x_val, y_val, labels, model)
 

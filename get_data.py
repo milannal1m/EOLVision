@@ -18,13 +18,15 @@ def retrieve_data(data_dir, labels):
     """
     x = []
     y = []
+    valid_extensions = ('.jpg', '.jpeg', '.png', '.bmp', '.gif')
     for label in labels:
         path = os.path.join(data_dir, label)
         class_num = labels.index(label)
         for img in os.listdir(path):
-            image = Image.open(os.path.join(path, img))
-            resized_img = image.resize((320, 240))
-            resized_arr = np.array(resized_img)
+            if img.lower().endswith(valid_extensions):
+                image = Image.open(os.path.join(path, img))
+                resized_img = image.resize((320, 240))
+                resized_arr = np.array(resized_img)
 
             x.append(resized_arr)
             y.append(class_num)
