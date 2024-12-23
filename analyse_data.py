@@ -6,6 +6,12 @@ import sklearn.model_selection
 import random
 
 def plot_model(history):
+    """
+    Plots training and validation loss and accuracy from a Keras History object.
+
+    Args:
+        history: Keras History object containing loss, val_loss, accuracy, and val_accuracy.
+    """
     
     def plot_loss(history, ax):
         """
@@ -22,7 +28,6 @@ def plot_model(history):
         ax.set_xlabel('Epoch')
         ax.legend(['Training Loss', 'Validation Loss'], loc='upper right')
 
-
     def plot_accuracy(history, ax):
         """
         Plots training and validation accuracy from a Keras History object.
@@ -36,21 +41,29 @@ def plot_model(history):
         ax.set_title('Model Accuracy')
         ax.set_ylabel('Accuracy')
         ax.set_xlabel('Epoch')
-        ax.legend(['Training Accuracy', 'Validation Accuracy'], loc='lower right')
+        ax.legend(['Training Accuracy', 'Validation Accuracy'], loc='upper left')
 
-
-    # Erstelle Subplots nebeneinander
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5))  # 1 Reihe, 2 Spalten
-
-    # Plots zeichnen
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
     plot_loss(history, axes[0])
     plot_accuracy(history, axes[1])
 
-    # Layout anpassen und anzeigen
     plt.tight_layout()
     plt.show()
 
 def format_data(x_val, y_val, labels, model):
+    """
+    Formats the validation data and model predictions for evaluation.
+
+    Args:
+        x_val: Validation data features.
+        y_val: Validation data labels.
+        labels: List of label names.
+        model: Trained Keras model.
+
+    Returns:
+        y_pred_string: Predicted labels as strings.
+        y_val_string: True labels as strings.
+    """
     label_binarizer = sklearn.preprocessing.LabelBinarizer()
 
     y_pred_prob = model.predict(x_val)
@@ -65,19 +78,37 @@ def format_data(x_val, y_val, labels, model):
     return y_pred_string, y_val_string
 
 def print_performance(model, y_val, y_train, x_val, x_train, labels):
+    """
+    Prints the performance of the model on training and validation data.
 
-    train_score = model.evaluate(x_train, y_train,verbose = 0)
-    val_score = model.evaluate(x_val, y_val,verbose = 0)
+    Args:
+        model: Trained Keras model.
+        y_val: Validation data labels.
+        y_train: Training data labels.
+        x_val: Validation data features.
+        x_train: Training data features.
+        labels: List of label names.
+    """
+    train_score = model.evaluate(x_train, y_train, verbose=0)
+    val_score = model.evaluate(x_val, y_val, verbose=0)
 
     print(f"\nTraining accuracy: {train_score[1]:.2f}")
     print(f"Validation accuracy: {val_score[1]:.2f}\n")
 
-    y_pred_string , y_val_string = format_data(x_val, y_val, labels, model)
+    y_pred_string, y_val_string = format_data(x_val, y_val, labels, model)
 
     print(sklearn.metrics.classification_report(y_val_string, y_pred_string))
 
-
 def visualize_predictions(model, x_val, y_val, labels):
+    """
+    Visualizes the model's predictions on validation data.
+
+    Args:
+        model: Trained Keras model.
+        x_val: Validation data features.
+        y_val: Validation data labels.
+        labels: List of label names.
+    """
     i = 0
     num_examples = 4
     prop_class = []

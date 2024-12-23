@@ -6,16 +6,21 @@ import random
 import pickle
 
 def set_seed(seed=0):
-  np.random.seed(seed)
-  tf.random.set_seed(seed)
-  random.seed(seed)
-  os.environ['TF_DETERMINISTIC_OPS'] = "1"
-  os.environ['TF_CUDNN_DETERMINISM'] = "1"
-  os.environ['PYTHONHASHSEED'] = str(seed)
-  tf.keras.utils.set_random_seed(seed)
+    """
+    Sets the random seed for reproducibility across various libraries and environments.
+
+    Arguments:
+    seed -- integer, the seed value to be set for reproducibility (default is 0).
+    """
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+    random.seed(seed)
+    os.environ['TF_DETERMINISTIC_OPS'] = "1"
+    os.environ['TF_CUDNN_DETERMINISM'] = "1"
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    tf.keras.utils.set_random_seed(seed)
 
 def add_layers(model, input_shape, num_classes):
-
     """
     Builds a Sequential model with specified layers for image classification.
 
@@ -50,7 +55,12 @@ def add_layers(model, input_shape, num_classes):
     
 def save_model(model,history,name):
     """
-    Saves the model to the specified directory.
+    Saves the model and its training history to the specified directory.
+
+    Arguments:
+    model -- the trained Keras model to be saved.
+    history -- training history of the model.
+    name -- string, name of the model for saving purposes.
     """
     model.save('models/'+name+'.keras')
 
@@ -61,7 +71,14 @@ def save_model(model,history,name):
 
 def load_model(name):
     """
-    Loads the model from the specified directory.
+    Loads the model and its training history from the specified directory.
+
+    Arguments:
+    name -- string, name of the model to be loaded.
+
+    Returns:
+    model -- the loaded Keras model.
+    history -- training history of the model.
     """
 
     model = tf.keras.models.load_model('models/'+name+'.keras')
@@ -71,11 +88,20 @@ def load_model(name):
 
 def build_model(x_train,y_train,x_val,y_val,labels,name):
     """
-    Builds a Sequential model with specified layers for image classification.
-    Returns:
-    model -- a Sequential model built as per the specified architecture.
-    """
+    Builds, compiles, and trains a Keras Sequential model with specified layers for image classification.
 
+    Arguments:
+    x_train -- numpy array of training data features.
+    y_train -- numpy array of training data labels.
+    x_val -- numpy array of validation data features.
+    y_val -- numpy array of validation data labels.
+    labels -- list of label names for classification.
+    name -- string, name of the model for saving purposes.
+
+    Returns:
+    model -- the trained Keras model.
+    history -- training history of the model.
+    """
     model = tf.keras.models.Sequential()
     model = add_layers(model, x_train.shape[1:], len(labels))
 
@@ -83,16 +109,15 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0006), loss=loss_fn, metrics=['accuracy'])
     set_seed()
 
-    # Data augmentation
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-        rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
-        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-        horizontal_flip=True,  # randomly flip images
-        vertical_flip=False)  # don't randomly flip images vertically
+        rotation_range=10,  
+        width_shift_range=0.1,  
+        height_shift_range=0.1,  
+        horizontal_flip=True,  
+        vertical_flip=False)  
 
-    # Fit the augmentation model to the data
     datagen.fit(x_train)
+
     early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15,restore_best_weights=True)
     lr_reduction_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(
     monitor='val_accuracy', patience=3, verbose=1, factor=0.7, min_lr=0.000001)
