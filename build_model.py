@@ -1,6 +1,7 @@
 import os 
 import tensorflow as tf
 from tensorflow.keras import regularizers
+from tensorflow.keras.utils import to_categorical
 import numpy as np
 import random
 import pickle
@@ -40,11 +41,11 @@ def add_layers(model, input_shape, num_classes):
 
     model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    model.add(tf.keras.layers.Dropout(0.20))
+    model.add(tf.keras.layers.Dropout(0.30))
 
     model.add(tf.keras.layers.Conv2D(128, (5, 5), kernel_regularizer=regularizers.l2(0.025)))  
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    model.add(tf.keras.layers.Dropout(0.30))
+    model.add(tf.keras.layers.Dropout(0.40))
 
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation='relu'))
@@ -67,8 +68,6 @@ def save_model(model,history,name):
     with open('history/'+name+'_history.pkl', 'wb') as f:
         pickle.dump(history.history, f)
 
-
-
 def load_model(name):
     """
     Loads the model and its training history from the specified directory.
@@ -85,6 +84,47 @@ def load_model(name):
     with open('history/'+name+'_history.pkl', 'rb') as f:
         history= pickle.load(f)
     return model,history
+
+def create_data(x_train, y_train, labels, class_label):
+
+    datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+    rotation_range=20,  # Zufällige Rotation der Bilder um bis zu 20 Grad
+    width_shift_range=0.2,  # Zufällige horizontale Verschiebung der Bilder um bis zu 20% der Breite
+    height_shift_range=0.2,  # Zufällige vertikale Verschiebung der Bilder um bis zu 20% der Höhe
+    shear_range=0.2,  # Zufällige Schertransformation
+    zoom_range=0.2,  # Zufälliger Zoom
+    horizontal_flip=True,  # Zufälliges horizontales Spiegeln
+    fill_mode='nearest'  # Füllmodus für neue Pixel
+)
+    # Filtere die Trainingsdaten für die Klasse 'blue'
+    class_index = labels.index(class_label)
+    y_train_labels = np.argmax(y_train, axis=1)
+    x_class = x_train[y_train_labels == class_index]
+    
+    # Erzeuge mehr Datenpunkte durch Augmentierung
+    augmented_images = []
+    augmented_labels = []
+
+    for img in x_class:
+        img = img.reshape((1,) + img.shape)  # Reshape das Bild für den Generator
+        i = 0
+        for batch in datagen.flow(img, batch_size=1):
+            augmented_images.append(batch[0])
+            augmented_labels.append(class_index)
+            i += 1
+            if i >= 2:  # Erzeuge 2 augmentierte Bilder pro Originalbild
+                break
+
+    # Konvertiere die Listen in numpy Arrays
+    augmented_images = np.array(augmented_images)
+    augmented_labels = np.array(augmented_labels)
+
+    # Füge die augmentierten Daten zu den Trainingsdaten hinzu
+    x_train = np.concatenate((x_train, augmented_images), axis=0)
+    augmented_labels= to_categorical(augmented_labels, num_classes=len(labels))
+    y_train = np.concatenate((y_train, augmented_labels), axis=0)
+
+    return x_train, y_train
 
 def build_model(x_train,y_train,x_val,y_val,labels,name):
     """
@@ -117,6 +157,8 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
         vertical_flip=False)  
 
     datagen.fit(x_train)
+
+    x_train, y_train = create_data(x_train, y_train, labels, 'blue')
 
     early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15,restore_best_weights=True)
     lr_reduction_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(
