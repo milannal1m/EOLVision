@@ -86,40 +86,48 @@ def load_model(name):
     return model,history
 
 def create_data(x_train, y_train, labels, class_label):
+    """
+    Augments the training data for each class and adds it to the trainings data.
+
+    Arguments:
+    x_train -- numpy array of training data features.
+    y_train -- numpy array of training data labels.
+    labels -- list of label names for classification.
+
+    Returns:
+    x_train -- augmented training data features.
+    y_train -- augmented training data labels.
+    """
 
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-    rotation_range=20,  # Zufällige Rotation der Bilder um bis zu 20 Grad
-    width_shift_range=0.2,  # Zufällige horizontale Verschiebung der Bilder um bis zu 20% der Breite
-    height_shift_range=0.2,  # Zufällige vertikale Verschiebung der Bilder um bis zu 20% der Höhe
-    shear_range=0.2,  # Zufällige Schertransformation
-    zoom_range=0.2,  # Zufälliger Zoom
-    horizontal_flip=True,  # Zufälliges horizontales Spiegeln
-    fill_mode='nearest'  # Füllmodus für neue Pixel
+    rotation_range=20, 
+    width_shift_range=0.2,  
+    height_shift_range=0.2,  
+    shear_range=0.2,  
+    zoom_range=0.2, 
+    horizontal_flip=True,  
+    fill_mode='nearest' 
 )
-    # Filtere die Trainingsdaten für die Klasse 'blue'
     class_index = labels.index(class_label)
     y_train_labels = np.argmax(y_train, axis=1)
     x_class = x_train[y_train_labels == class_index]
     
-    # Erzeuge mehr Datenpunkte durch Augmentierung
     augmented_images = []
     augmented_labels = []
 
     for img in x_class:
-        img = img.reshape((1,) + img.shape)  # Reshape das Bild für den Generator
+        img = img.reshape((1,) + img.shape) 
         i = 0
         for batch in datagen.flow(img, batch_size=1):
             augmented_images.append(batch[0])
             augmented_labels.append(class_index)
             i += 1
-            if i >= 2:  # Erzeuge 2 augmentierte Bilder pro Originalbild
+            if i >= 2:
                 break
 
-    # Konvertiere die Listen in numpy Arrays
     augmented_images = np.array(augmented_images)
     augmented_labels = np.array(augmented_labels)
 
-    # Füge die augmentierten Daten zu den Trainingsdaten hinzu
     x_train = np.concatenate((x_train, augmented_images), axis=0)
     augmented_labels= to_categorical(augmented_labels, num_classes=len(labels))
     y_train = np.concatenate((y_train, augmented_labels), axis=0)

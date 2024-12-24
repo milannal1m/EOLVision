@@ -11,7 +11,7 @@ labels = ['blue', 'fail', 'red', 'white']
 x_train, y_train, x_val, y_val = get_train_val(labels=labels)
 
 # Define the model name
-name = 'Model17'
+name = 'Model18'
 
 # Define the base directory and file path for saving/loading the model
 base_dir = os.getcwd()

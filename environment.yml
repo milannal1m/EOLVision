@@ -1,0 +1,10 @@
+name: end-of-line-testing
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - numpy
+  - tensorflow
+  - scikit-learn
+  - matplotlib
+  - pillow
