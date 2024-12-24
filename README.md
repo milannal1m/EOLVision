@@ -21,7 +21,7 @@ This file contains functions for creating, training, and saving the model.
 
 - `set_seed(seed)`: Sets the random seed for reproducibility.
 - `add_layers(model, input_shape, num_classes)`: Builds a Sequential model with specified layers.
-- `build_model(x_train, y_train, x_val, y_val, labels, name)`: Creates, compiles, and trains a model.
+- `build_model(x_train, y_train, x_val, y_val, labels, name)`: Creates, trains and saves a model.
 - `save_model(model, history, name)`: Saves the model and its training history.
 - `load_model(name)`: Loads the model and its training history.
 - `create_data(x_train, y_train, labels)`: Generates more training data for each class through data augmentation.
@@ -60,12 +60,13 @@ This file is the main script that loads the data, trains the model, and analyzes
 
 
 2. **Prepare the data**:
-    Place the training and test data in the appropriate directories under data.
+    Place the training data under /data/data/train/train_four_label/ and the test data under /data/data/test/test_four_label/
+    
 
 3. **Train and run the model**:
-    Run the main script project.py to train the model and analyze the results
+    Run the main script project.py to train a model with [model_name] and analyze the results or alternatively load a model with [model_name]
     ```bash
-   python project.py
+   python project.py [model_name]
    ```
 
 ## Results
