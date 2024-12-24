@@ -4,6 +4,30 @@
 
 This project involves the development and implementation of a computer vision model for classifying images into various categories. The model is trained using Convolutional Neural Networks (CNNs) and various data preprocessing and augmentation techniques to improve accuracy and robustness.
 
+## Installation and Execution
+
+1. **Install dependencies**:
+   Make sure you have the necessary Python libraries installed. You can install the dependencies with pip:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   or alternatively with conda:
+
+    ```bash
+   conda env create -f environment.yml
+   conda activate end-of-line-testing
+   ```
+
+2. **Prepare the data**:
+    Place the training data under /data/data/train/train_four_label/ and the test data under /data/data/test/test_four_label/
+    
+
+3. **Train and run the model**:
+    Run the main script project.py to train a model with [model_name] and analyze the results or alternatively load a model with [model_name]
+    ```bash
+   python project.py [model_name]
+   ```
+
 ## Files and Functions
 
 ### `get_data.py`
@@ -44,30 +68,6 @@ This file is the main script that loads the data, trains the model, and analyzes
 - Prints the model summary.
 - Analyzes the model's performance and visualizes the predictions.
 
-## Installation and Execution
-
-1. **Install dependencies**:
-   Make sure you have the necessary Python libraries installed. You can install the dependencies with pip:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   or alternatively with conda:
-
-    ```bash
-   conda env create -f environment.yml
-   conda activate end-of-line-testing
-   ```
-
-
-2. **Prepare the data**:
-    Place the training data under /data/data/train/train_four_label/ and the test data under /data/data/test/test_four_label/
-    
-
-3. **Train and run the model**:
-    Run the main script project.py to train a model with [model_name] and analyze the results or alternatively load a model with [model_name]
-    ```bash
-   python project.py [model_name]
-   ```
 
 ## Results
 The results of the model will be output to the console and the visualizations will be displayed. The trained model and its training history will be saved in the models and history directories, respectively.
