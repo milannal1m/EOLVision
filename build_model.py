@@ -9,7 +9,6 @@ import pickle
 def set_seed(seed=0):
     """
     Sets the random seed for reproducibility across various libraries and environments.
-
     Arguments:
     seed -- integer, the seed value to be set for reproducibility (default is 0).
     """
@@ -24,12 +23,10 @@ def set_seed(seed=0):
 def add_layers(model, input_shape, num_classes):
     """
     Builds a Sequential model with specified layers for image classification.
-
     Arguments:
     model -- Base model to be extended
     input_shape -- The shape of the images in the dataset.
     num_classes -- The number of classes for classification.
-
     Returns:
     model -- a Sequential model built as per the specified architecture.
     """
@@ -50,14 +47,13 @@ def add_layers(model, input_shape, num_classes):
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation='relu'))
     model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))
-    
+
 
     return model
-    
+
 def save_model(model,history,name):
     """
     Saves the model and its training history to the specified directory.
-
     Arguments:
     model -- the trained Keras model to be saved.
     history -- training history of the model.
@@ -71,10 +67,8 @@ def save_model(model,history,name):
 def load_model(name):
     """
     Loads the model and its training history from the specified directory.
-
     Arguments:
     name -- string, name of the model to be loaded.
-
     Returns:
     model -- the loaded Keras model.
     history -- training history of the model.
@@ -86,32 +80,30 @@ def load_model(name):
     return model,history
 
 def create_data(x_train, y_train, labels, class_label):
+    """     
+    Augments the training data for each class and adds it to the trainings data.      
+    Arguments:     
+    x_train -- numpy array of training data features.     
+    y_train -- numpy array of training data labels.     
+    labels -- list of label names for classification.      
+    Returns:     
+    x_train -- augmented training data features.     
+    y_train -- augmented training data labels.     
     """
-    Augments the training data for each class and adds it to the trainings data.
-
-    Arguments:
-    x_train -- numpy array of training data features.
-    y_train -- numpy array of training data labels.
-    labels -- list of label names for classification.
-
-    Returns:
-    x_train -- augmented training data features.
-    y_train -- augmented training data labels.
-    """
-
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-    rotation_range=20, 
+    rotation_range=20,  
     width_shift_range=0.2,  
     height_shift_range=0.2,  
     shear_range=0.2,  
     zoom_range=0.2, 
     horizontal_flip=True,  
-    fill_mode='nearest' 
+    fill_mode='nearest'  
 )
+
     class_index = labels.index(class_label)
     y_train_labels = np.argmax(y_train, axis=1)
     x_class = x_train[y_train_labels == class_index]
-    
+
     augmented_images = []
     augmented_labels = []
 
@@ -122,7 +114,7 @@ def create_data(x_train, y_train, labels, class_label):
             augmented_images.append(batch[0])
             augmented_labels.append(class_index)
             i += 1
-            if i >= 2:
+            if i >= 2:  
                 break
 
     augmented_images = np.array(augmented_images)
@@ -137,7 +129,6 @@ def create_data(x_train, y_train, labels, class_label):
 def build_model(x_train,y_train,x_val,y_val,labels,name):
     """
     Builds, compiles, and trains a Keras Sequential model with specified layers for image classification.
-
     Arguments:
     x_train -- numpy array of training data features.
     y_train -- numpy array of training data labels.
@@ -145,7 +136,6 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
     y_val -- numpy array of validation data labels.
     labels -- list of label names for classification.
     name -- string, name of the model for saving purposes.
-
     Returns:
     model -- the trained Keras model.
     history -- training history of the model.
@@ -174,5 +164,3 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
 
     history = model.fit(x=x_train, y=y_train, validation_data=(x_val, y_val), epochs=100, callbacks=[lr_reduction_on_plateau, early_stopper], batch_size=64)
     save_model(model, history, name)
-
-    return model, history

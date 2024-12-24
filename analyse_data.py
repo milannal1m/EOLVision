@@ -77,23 +77,33 @@ def format_data(x_val, y_val, labels, model):
 
     return y_pred_string, y_val_string
 
-def print_performance(model, y_val, y_train, x_val, x_train, labels):
+def print_performance(model, x_train, y_train, x_val, y_val, labels, x_test = None, y_test = None):
     """
-    Prints the performance of the model on training and validation data.
+    Prints the performance of the model on training, validation and optionally test data.
 
     Args:
         model: Trained Keras model.
-        y_val: Validation data labels.
+        x_train: Training data features.
         y_train: Training data labels.
         x_val: Validation data features.
-        x_train: Training data features.
+        y_val: Validation data labels.
         labels: List of label names.
+        x_test: Test data features.
+        y_test: Test data labels.
+
+    Optional Args:
+        x_test: Test data features.
+        y_test: Test data labels
     """
     train_score = model.evaluate(x_train, y_train, verbose=0)
     val_score = model.evaluate(x_val, y_val, verbose=0)
 
     print(f"\nTraining accuracy: {train_score[1]:.2f}")
     print(f"Validation accuracy: {val_score[1]:.2f}\n")
+
+    if x_test is not None and y_test is not None:
+        test_score = model.evaluate(x_test, y_test, verbose=0)
+        print(f"Test accuracy: {test_score[1]:.2f}\n")
 
     y_pred_string, y_val_string = format_data(x_val, y_val, labels, model)
 
