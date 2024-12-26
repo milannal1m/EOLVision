@@ -36,18 +36,14 @@ def add_layers(model, input_shape, num_classes):
     model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu'))
     model.add(tf.keras.layers.MaxPooling2D((2, 2)))
 
-    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu', kernel_regularizer=regularizers.l2(0.01)))
-    model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    model.add(tf.keras.layers.Dropout(0.30))
-
-    model.add(tf.keras.layers.Conv2D(128, (5, 5), kernel_regularizer=regularizers.l2(0.025)))  
-    model.add(tf.keras.layers.MaxPooling2D((2, 2)))
+    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(tf.keras.layers.Dropout(0.40))
+    model.add(tf.keras.layers.MaxPooling2D((2, 2)))
 
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation='relu'))
+    model.add(tf.keras.layers.Dropout(0.40))
     model.add(tf.keras.layers.Dense(num_classes, activation='softmax'))
-
 
     return model
 
@@ -79,52 +75,6 @@ def load_model(name):
         history= pickle.load(f)
     return model,history
 
-def create_data(x_train, y_train, labels, class_label):
-    """     
-    Augments the training data for each class and adds it to the trainings data.      
-    Arguments:     
-    x_train -- numpy array of training data features.     
-    y_train -- numpy array of training data labels.     
-    labels -- list of label names for classification.      
-    Returns:     
-    x_train -- augmented training data features.     
-    y_train -- augmented training data labels.     
-    """
-    datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-    rotation_range=20,  
-    width_shift_range=0.2,  
-    height_shift_range=0.2,  
-    shear_range=0.2,  
-    zoom_range=0.2, 
-    horizontal_flip=True,  
-    fill_mode='nearest'  
-)
-
-    class_index = labels.index(class_label)
-    y_train_labels = np.argmax(y_train, axis=1)
-    x_class = x_train[y_train_labels == class_index]
-
-    augmented_images = []
-    augmented_labels = []
-
-    for img in x_class:
-        img = img.reshape((1,) + img.shape) 
-        i = 0
-        for batch in datagen.flow(img, batch_size=1):
-            augmented_images.append(batch[0])
-            augmented_labels.append(class_index)
-            i += 1
-            if i >= 2:  
-                break
-
-    augmented_images = np.array(augmented_images)
-    augmented_labels = np.array(augmented_labels)
-
-    x_train = np.concatenate((x_train, augmented_images), axis=0)
-    augmented_labels= to_categorical(augmented_labels, num_classes=len(labels))
-    y_train = np.concatenate((y_train, augmented_labels), axis=0)
-
-    return x_train, y_train
 
 def build_model(x_train,y_train,x_val,y_val,labels,name):
     """
@@ -144,7 +94,7 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
     model = add_layers(model, x_train.shape[1:], len(labels))
 
     loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
-    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0006), loss=loss_fn, metrics=['accuracy'])
+    model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.0006), loss=loss_fn, metrics=['accuracy'])
     set_seed()
 
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(
@@ -156,11 +106,11 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
 
     datagen.fit(x_train)
 
-    x_train, y_train = create_data(x_train, y_train, labels, 'blue')
-
     early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15,restore_best_weights=True)
     lr_reduction_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(
     monitor='val_accuracy', patience=3, verbose=1, factor=0.7, min_lr=0.000001)
 
     history = model.fit(x=x_train, y=y_train, validation_data=(x_val, y_val), epochs=100, callbacks=[lr_reduction_on_plateau, early_stopper], batch_size=64)
     save_model(model, history, name)
+
+    return model, history
