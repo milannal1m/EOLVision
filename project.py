@@ -1,14 +1,14 @@
-# Import necessary functions and modules
-from get_data import get_train_val 
+from get_data import get_data
 from build_model import load_model, build_model
 from analyse_data import plot_model
 from analyse_data import print_performance
 from analyse_data import visualize_predictions
+from analyse_data import print_confusion_matrix
 import os 
 import sys
 
 labels = ['blue', 'fail', 'red', 'white']
-x_train, y_train, x_val, y_val = get_train_val(labels=labels)
+x_train, y_train, x_val, y_val, x_test, y_test = get_data(labels)
 
 name = sys.argv[1]
 
@@ -24,7 +24,9 @@ else:
 
 model.summary()
 
-print_performance(model, y_val, y_train, x_val, x_train, labels)
+print_performance(model, x_train, y_train, x_val, y_val, labels)
+
+print_confusion_matrix(model, x_val, y_val, labels)
 
 visualize_predictions(model, x_val, y_val, labels)
 

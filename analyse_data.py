@@ -3,6 +3,8 @@ import tensorflow as tf
 import numpy as np
 import sklearn.preprocessing
 import sklearn.model_selection
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import seaborn as sns
 import random
 
 def plot_model(history):
@@ -98,16 +100,21 @@ def print_performance(model, x_train, y_train, x_val, y_val, labels, x_test = No
     train_score = model.evaluate(x_train, y_train, verbose=0)
     val_score = model.evaluate(x_val, y_val, verbose=0)
 
-    print(f"\nTraining accuracy: {train_score[1]:.2f}")
-    print(f"Validation accuracy: {val_score[1]:.2f}\n")
+    print(f"\nTraining accuracy: {train_score[1]:.3f}")
+    print(f"Validation accuracy: {val_score[1]:.3f}\n")
+
+    x_metric = x_val
+    y_metric = y_val
 
     if x_test is not None and y_test is not None:
         test_score = model.evaluate(x_test, y_test, verbose=0)
-        print(f"Test accuracy: {test_score[1]:.2f}\n")
+        print(f"Test accuracy: {test_score[1]:.3f}\n")
+        x_metric = x_test
+        y_metric = y_test
 
-    y_pred_string, y_val_string = format_data(x_val, y_val, labels, model)
+    y_pred_string, y_metric_string = format_data(x_metric, y_metric, labels, model)
 
-    print(sklearn.metrics.classification_report(y_val_string, y_pred_string))
+    print(sklearn.metrics.classification_report(y_metric_string, y_pred_string))
 
 def visualize_predictions(model, x_val, y_val, labels):
     """
@@ -159,4 +166,29 @@ def visualize_predictions(model, x_val, y_val, labels):
         ax[1, i].axis('off')
         count += 1
 
+def print_confusion_matrix(model, x_true, y_true, labels):
+    """
+    Plots the confusion matrix for the given model predictions and true labels.
 
+    Arguments:
+    model -- the trained Keras model used for making predictions.
+    x_true -- numpy array of true data features.
+    y_true -- numpy array of true data labels.
+    labels -- list of label names for classification.
+
+    This function predicts the labels for the given true data features using the provided model,
+    computes the confusion matrix, and plots it as a heatmap.
+    """
+
+    y_pred_prob = model.predict(x_true)
+    y_pred = np.argmax(y_pred_prob, axis=1)
+
+    y_true = [np.argmax(row) for row in y_true]
+
+    cm = confusion_matrix(y_true, y_pred)
+
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    plt.title("Confusion Matrix Heatmap")
+    plt.xlabel("Predicted Labels")
+    plt.ylabel("True Labels")

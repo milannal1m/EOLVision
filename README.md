@@ -35,9 +35,7 @@ This project involves the development and implementation of a computer vision mo
 This file contains functions for loading and preprocessing image data.
 
 - `retrieve_data(data_dir, labels)`: Loads and processes image data from a specified directory.
-- `train_val_split(x, y)`: Splits the data into training and validation sets.
-- `get_train_val(labels)`: Loads and processes the training and validation data.
-- `get_test(labels)`: Loads and processes the test data.
+- `get_data(labels)`: Loads and processes the train, validation and test data.
 
 ### `build_model.py`
 
@@ -48,7 +46,6 @@ This file contains functions for creating, training, and saving the model.
 - `build_model(x_train, y_train, x_val, y_val, labels, name)`: Creates, trains and saves a model.
 - `save_model(model, history, name)`: Saves the model and its training history.
 - `load_model(name)`: Loads the model and its training history.
-- `create_data(x_train, y_train, labels)`: Generates more training data for each class through data augmentation.
 
 ### `analyse_data.py`
 
@@ -58,6 +55,7 @@ This file contains functions for analyzing and visualizing the model's performan
 - `format_data(x_val, y_val, labels, model)`: Formats the validation data and model predictions for evaluation.
 - `print_performance(model, y_val, y_train, x_val, x_train, labels)`: Prints the performance of the model on training and validation data.
 - `visualize_predictions(model, x_val, y_val, labels)`: Visualizes the model's predictions on validation data.
+- `print_confusion_matrix(model, x_true, y_true, labels)`: Plots the confusion matrix.
 
 ### `project.py`
 
