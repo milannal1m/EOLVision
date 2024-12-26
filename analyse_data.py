@@ -188,7 +188,7 @@ def print_confusion_matrix(model, x_true, y_true, labels):
     cm = confusion_matrix(y_true, y_pred)
 
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Reds', xticklabels=labels, yticklabels=labels)
     plt.title("Confusion Matrix Heatmap")
     plt.xlabel("Predicted Labels")
     plt.ylabel("True Labels")
