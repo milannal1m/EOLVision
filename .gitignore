@@ -1,4 +1,3 @@
-/data/
 /model/*
 !/model/Model.keras
 /history/*
