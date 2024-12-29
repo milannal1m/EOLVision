@@ -20,45 +20,6 @@ def set_seed(seed=0):
     os.environ['PYTHONHASHSEED'] = str(seed)
     tf.keras.utils.set_random_seed(seed)
 
-def add_augmented_data(x_train, y_train, labels):
-    datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True,
-        fill_mode='nearest'
-    )
-
-    augmented_images = []
-    augmented_labels = []
-
-    y_train_labels = np.argmax(y_train, axis=1)
-
-    for class_label in labels:
-        class_index = labels.index(class_label)
-        x_class = x_train[y_train_labels == class_index]
-
-        for img in x_class:
-            img = img.reshape((1,) + img.shape)
-            i = 0
-            for batch in datagen.flow(img, batch_size=1):
-                augmented_images.append(batch[0])
-                augmented_labels.append(class_index)
-                i += 1
-                if i >= 2:  # Erzeuge 2 augmentierte Bilder pro Originalbild
-                    break
-
-    augmented_images = np.array(augmented_images)
-    augmented_labels = np.array(augmented_labels)
-    augmented_labels = tf.keras.utils.to_categorical(augmented_labels, num_classes=len(labels))
-
-    x_train = np.concatenate((x_train, augmented_images), axis=0)
-    y_train = np.concatenate((y_train, augmented_labels), axis=0)
-
-    return x_train, y_train
-
 def add_layers(model, input_shape, num_classes):
     """
     Builds a Sequential model with specified layers for image classification.
@@ -136,8 +97,6 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
     loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
     model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.0004), loss=loss_fn, metrics=['accuracy'])
     set_seed()
-
-    #x_train, y_train = add_augmented_data(x_train,y_train,labels)
 
     early_stopper = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15,restore_best_weights=True)
     lr_reduction_on_plateau = tf.keras.callbacks.ReduceLROnPlateau(

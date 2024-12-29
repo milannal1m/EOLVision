@@ -116,14 +116,14 @@ def print_performance(model, x_train, y_train, x_val, y_val, labels, x_test = No
 
     print(sklearn.metrics.classification_report(y_metric_string, y_pred_string))
 
-def visualize_predictions(model, x_val, y_val, labels):
+def visualize_predictions(model, x_true, y_true, labels):
     """
     Visualizes the model's predictions on validation data.
 
     Args:
         model: Trained Keras model.
-        x_val: Validation data features.
-        y_val: Validation data labels.
+        x_true: True data features.
+        y_true: True data labels.
         labels: List of label names.
     """
     i = 0
@@ -131,15 +131,15 @@ def visualize_predictions(model, x_val, y_val, labels):
     prop_class = []
     mis_class = []
 
-    y_pred_prob = model.predict(x_val)
+    y_pred_prob = model.predict(x_true)
     y_pred = np.argmax(y_pred_prob, axis=1)
 
-    y_val = [np.argmax(row) for row in y_val]
+    y_true = [np.argmax(row) for row in y_true]
 
-    for i in range(len(y_val)):
-        if y_val[i] == y_pred[i]:
+    for i in range(len(y_true)):
+        if y_true[i] == y_pred[i]:
             prop_class.append(i)
-        if y_val[i] != y_pred[i]:
+        if y_true[i] != y_pred[i]:
             mis_class.append(i)
 
     random.shuffle(prop_class)
@@ -153,16 +153,16 @@ def visualize_predictions(model, x_val, y_val, labels):
     fig.set_size_inches(12, 6)
 
     for i in range(4):
-        ax[0, i].imshow(x_val[prop_class[count]])
-        ax[0, i].set_title(f"Predicted: {labels[y_pred[prop_class[count]]]}\nActual: {labels[y_val[prop_class[count]]]}")
+        ax[0, i].imshow(x_true[prop_class[count]])
+        ax[0, i].set_title(f"Predicted: {labels[y_pred[prop_class[count]]]}\nActual: {labels[y_true[prop_class[count]]]}")
         ax[0, i].axis('off')
         count += 1
 
     count = 0
 
     for i in range(4):
-        ax[1, i].imshow(x_val[mis_class[count]])
-        ax[1, i].set_title(f"Predicted: {labels[y_pred[mis_class[count]]]}\nActual: {labels[y_val[mis_class[count]]]}")
+        ax[1, i].imshow(x_true[mis_class[count]])
+        ax[1, i].set_title(f"Predicted: {labels[y_pred[mis_class[count]]]}\nActual: {labels[y_true[mis_class[count]]]}")
         ax[1, i].axis('off')
         count += 1
 
@@ -179,7 +179,7 @@ def print_confusion_matrix(model, x_true, y_true, labels):
     This function predicts the labels for the given true data features using the provided model,
     computes the confusion matrix, and plots it as a heatmap.
     """
-
+    #plt.rcParams.update({'font.size': 18})
     y_pred_prob = model.predict(x_true)
     y_pred = np.argmax(y_pred_prob, axis=1)
 
@@ -192,3 +192,5 @@ def print_confusion_matrix(model, x_true, y_true, labels):
     plt.title("Confusion Matrix Heatmap")
     plt.xlabel("Predicted Labels")
     plt.ylabel("True Labels")
+
+    #plt.savefig('confusionmatrix.pdf', format='pdf', transparent=True)

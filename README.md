@@ -28,6 +28,11 @@ This project involves the development and implementation of a computer vision mo
    python project.py [model_name]
    ```
 
+    The model provided in this repo is called Model so simply load it by running
+    ```bash
+   python project.py Model
+   ```
+
 ## Files and Functions
 
 ### `get_data.py`

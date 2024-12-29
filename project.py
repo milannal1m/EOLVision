@@ -12,7 +12,6 @@ x_train, y_train, x_val, y_val, x_test, y_test = get_data(labels)
 
 name = sys.argv[1]
 
-
 base_dir = os.getcwd()
 file_path = os.path.join(base_dir, "models", f"{name}.keras")
 
@@ -24,10 +23,12 @@ else:
 
 model.summary()
 
-print_performance(model, x_train, y_train, x_val, y_val, labels)
+config = model.get_config()
 
-print_confusion_matrix(model, x_val, y_val, labels)
+print_performance(model, x_train, y_train, x_val, y_val, labels, x_test, y_test)
 
-visualize_predictions(model, x_val, y_val, labels)
+print_confusion_matrix(model, x_test, y_test, labels)
+
+visualize_predictions(model, x_test, y_test, labels)
 
 plot_model(history)

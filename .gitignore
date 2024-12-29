@@ -1,3 +1,5 @@
 /data/
-/models/notizen.txt
-/doku/
+/models/*
+!/models/Model.keras
+/history/*
+!/models/Model_history.keras
