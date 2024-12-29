@@ -1,5 +1,5 @@
-# End Of Line Testing CNN Model
-
+# EOLVision
+EOLVision is an End Of Line Testing CNN Model
 ## Project Overview
 
 This project involves the development and implementation of a computer vision model for classifying images into various categories. The model is trained using Convolutional Neural Networks (CNNs) and various data preprocessing and augmentation techniques to improve accuracy and robustness.
