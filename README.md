@@ -18,12 +18,9 @@ This project involves the development and implementation of a computer vision mo
    conda activate end-of-line-testing
    ```
 
-2. **Prepare the data**:
-    Place the training data under /data/data/train/train_four_label/ and the test data under /data/data/test/test_four_label/
-    
-
-3. **Train and run the model**:
-    Run the main script project.py to train a model with [model_name] and analyze the results or alternatively load a model with [model_name]
+3. **Train and or the model**:
+    Run the main script project.py to train a model with the configuration set in `build_model.py` and analyze the results or alternatively load a model. If a model with the name [model_name] already exists under model/ it will be loaded, otherwise it will be trained.
+   
     ```bash
    python project.py [model_name]
    ```
