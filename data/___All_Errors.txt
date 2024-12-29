@@ -1,0 +1,10 @@
+CorrelationId: 587eab0f-18f6-41a3-9672-590d534bbff0
+UTC DateTime: 12/20/2024 18:06:14
+
+The following files/folders have not been downloaded
+0. data/train/train_six_label/blue
+1. data/train/train_six_label/blue_fail
+2. data/train/train_six_label/red
+3. data/train/train_six_label/red_fail
+4. data/train/train_six_label/white
+5. data/train/train_six_label/white_fail
