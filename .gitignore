@@ -1,5 +1,8 @@
 /data/
-/models/*
-!/models/Model.keras
+/model/*
+!/model/Model.keras
 /history/*
 !/history/Model_history.pkl
+__pycache__/
+*.pyc
+.DS_Store
