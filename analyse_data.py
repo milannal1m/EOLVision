@@ -7,15 +7,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import seaborn as sns
 import random
 
-def plot_model(history):
-    """
-    Plots training and validation loss and accuracy from a Keras History object.
-
-    Args:
-        history: Keras History object containing loss, val_loss, accuracy, and val_accuracy.
-    """
-    
-    def plot_loss(history, ax):
+def plot_loss(history, ax):
         """
         Plots training and validation loss from a Keras History object.
 
@@ -30,7 +22,7 @@ def plot_model(history):
         ax.set_xlabel('Epoch')
         ax.legend(['Training Loss', 'Validation Loss'], loc='upper right')
 
-    def plot_accuracy(history, ax):
+def plot_accuracy(history, ax):
         """
         Plots training and validation accuracy from a Keras History object.
 
@@ -45,6 +37,14 @@ def plot_model(history):
         ax.set_xlabel('Epoch')
         ax.legend(['Training Accuracy', 'Validation Accuracy'], loc='upper left')
 
+def plot_model(history):
+    """
+    Plots training and validation loss and accuracy from a Keras History object.
+
+    Args:
+        history: Keras History object containing loss, val_loss, accuracy, and val_accuracy.
+    """
+
     fig, axes = plt.subplots(1, 2, figsize=(12, 4))
     plot_loss(history, axes[0])
     plot_accuracy(history, axes[1])
@@ -52,32 +52,33 @@ def plot_model(history):
     plt.tight_layout()
     plt.show()
 
-def format_data(x_val, y_val, labels, model):
+def format_data(x_true, y_true, labels, model):
     """
     Formats the validation data and model predictions for evaluation.
+    Formats the data to String labels.
 
     Args:
-        x_val: Validation data features.
-        y_val: Validation data labels.
+        x_true: Validation data features.
+        y_true: Validation data labels.
         labels: List of label names.
         model: Trained Keras model.
 
     Returns:
         y_pred_string: Predicted labels as strings.
-        y_val_string: True labels as strings.
+        y_true_string: True labels as strings.
     """
     label_binarizer = sklearn.preprocessing.LabelBinarizer()
 
-    y_pred_prob = model.predict(x_val)
+    y_pred_prob = model.predict(x_true)
     y_pred = np.argmax(y_pred_prob, axis=1)
     label_binarizer.fit([0, 1, 2, 3])
     y_pred = label_binarizer.transform(y_pred)
 
     label_binarizer.fit(labels)
-    y_val_string = label_binarizer.inverse_transform(y_val)
+    y_true_string = label_binarizer.inverse_transform(y_true)
     y_pred_string = label_binarizer.inverse_transform(y_pred)
 
-    return y_pred_string, y_val_string
+    return y_pred_string,y_true_string
 
 def print_performance(model, x_train, y_train, x_val, y_val, labels, x_test = None, y_test = None):
     """

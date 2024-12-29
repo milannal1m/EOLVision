@@ -13,7 +13,7 @@ x_train, y_train, x_val, y_val, x_test, y_test = get_data(labels)
 name = sys.argv[1]
 
 base_dir = os.getcwd()
-file_path = os.path.join(base_dir, "models", f"{name}.keras")
+file_path = os.path.join(base_dir, "model", f"{name}.keras")
 
 if os.path.isfile(file_path):
     model, history = load_model(name)

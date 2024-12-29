@@ -9,6 +9,7 @@ import pickle
 def set_seed(seed=0):
     """
     Sets the random seed for reproducibility across various libraries and environments.
+
     Arguments:
     seed -- integer, the seed value to be set for reproducibility (default is 0).
     """
@@ -23,10 +24,12 @@ def set_seed(seed=0):
 def add_layers(model, input_shape, num_classes):
     """
     Builds a Sequential model with specified layers for image classification.
+
     Arguments:
     model -- Base model to be extended
     input_shape -- The shape of the images in the dataset.
     num_classes -- The number of classes for classification.
+
     Returns:
     model -- a Sequential model built as per the specified architecture.
     """
@@ -51,35 +54,40 @@ def add_layers(model, input_shape, num_classes):
 def save_model(model,history,name):
     """
     Saves the model and its training history to the specified directory.
+
     Arguments:
     model -- the trained Keras model to be saved.
     history -- training history of the model.
     name -- string, name of the model for saving purposes.
     """
-    model.save('models/'+name+'.keras')
+    model.save('model/'+name+'.keras')
 
     with open('history/'+name+'_history.pkl', 'wb') as f:
         pickle.dump(history.history, f)
 
 def load_model(name):
     """
-    Loads the model and its training history from the specified directory.
+    Loads the model and its training history from the specified directory
+    
     Arguments:
     name -- string, name of the model to be loaded.
+
     Returns:
     model -- the loaded Keras model.
     history -- training history of the model.
     """
+    model = tf.keras.models.load_model('model/'+name+'.keras')
 
-    model = tf.keras.models.load_model('models/'+name+'.keras')
     with open('history/'+name+'_history.pkl', 'rb') as f:
         history= pickle.load(f)
+        
     return model,history
 
 
 def build_model(x_train,y_train,x_val,y_val,labels,name):
     """
     Builds, compiles, and trains a Keras Sequential model with specified layers for image classification.
+
     Arguments:
     x_train -- numpy array of training data features.
     y_train -- numpy array of training data labels.
@@ -87,6 +95,7 @@ def build_model(x_train,y_train,x_val,y_val,labels,name):
     y_val -- numpy array of validation data labels.
     labels -- list of label names for classification.
     name -- string, name of the model for saving purposes.
+
     Returns:
     model -- the trained Keras model.
     history -- training history of the model.

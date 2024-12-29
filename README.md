@@ -56,10 +56,12 @@ This file contains functions for creating, training, and saving the model.
 
 This file contains functions for analyzing and visualizing the model's performance.
 
+- `plot_loss(history, ax)`: Plots training and validation loss.
+- `plot_accuracy(history, ax)`: Plots training and validation accuracy.
 - `plot_model(history)`: Plots training and validation loss and accuracy.
-- `format_data(x_val, y_val, labels, model)`: Formats the validation data and model predictions for evaluation.
-- `print_performance(model, y_val, y_train, x_val, x_train, labels)`: Prints the performance of the model on training and validation data.
-- `visualize_predictions(model, x_val, y_val, labels)`: Visualizes the model's predictions on validation data.
+- `prepare_evaluation_data(x_true, y_true, labels, model)`: Formats the validation data and model predictions for evaluation.
+- `print_performance(model, x_train, y_train, x_val, y_val, labels, x_test = None, y_test = None)`: Prints the performance of the model on training, validation and optionally test data.
+- `visualize_predictions(model, x_true, y_true, labels)`: Visualizes the model's predictions on validation data.
 - `print_confusion_matrix(model, x_true, y_true, labels)`: Plots the confusion matrix.
 
 ### `project.py`
