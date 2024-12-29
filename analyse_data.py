@@ -179,7 +179,6 @@ def print_confusion_matrix(model, x_true, y_true, labels):
     This function predicts the labels for the given true data features using the provided model,
     computes the confusion matrix, and plots it as a heatmap.
     """
-    #plt.rcParams.update({'font.size': 18})
     y_pred_prob = model.predict(x_true)
     y_pred = np.argmax(y_pred_prob, axis=1)
 
@@ -192,5 +191,3 @@ def print_confusion_matrix(model, x_true, y_true, labels):
     plt.title("Confusion Matrix Heatmap")
     plt.xlabel("Predicted Labels")
     plt.ylabel("True Labels")
-
-    #plt.savefig('confusionmatrix.pdf', format='pdf', transparent=True)
