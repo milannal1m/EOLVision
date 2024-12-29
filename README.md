@@ -61,7 +61,7 @@ This file contains functions for analyzing and visualizing the model's performan
 - `visualize_predictions(model, x_true, y_true, labels)`: Visualizes the model's predictions on validation data.
 - `print_confusion_matrix(model, x_true, y_true, labels)`: Plots the confusion matrix.
 
-### `project.py`
+### `eolvision.py`
 
 This file is the main script that loads the data, trains the model, and analyzes the results.
 
