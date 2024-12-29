@@ -3,6 +3,6 @@
 !/model/Model.keras
 /history/*
 !/history/Model_history.pkl
-__pycache__/
+/__pycache__/
 *.pyc
 .DS_Store
