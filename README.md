@@ -22,12 +22,12 @@ This project involves the development and implementation of a computer vision mo
     Run the main script project.py to train a model with the configuration set in `build_model.py` and analyze the results or alternatively load a model. If a model with the name [model_name] already exists under model/ it will be loaded, otherwise it will be trained.
    
     ```bash
-   python project.py [model_name]
+   python eolvision.py [model_name]
    ```
 
     The model provided in this repo is called Model so simply load it by running
     ```bash
-   python project.py Model
+   python eolvision.py Model
    ```
 
 ## Files and Functions
