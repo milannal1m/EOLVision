@@ -1,4 +1,4 @@
-name: end-of-line-testing
+name: eolvision
 channels:
   - defaults
 dependencies:
