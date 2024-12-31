@@ -15,7 +15,7 @@ This project involves the development and implementation of a computer vision mo
 
     ```bash
    conda env create -f environment.yml
-   conda activate end-of-line-testing
+   conda activate eolvision
    ```
 
 3. **Train and or the model**:
