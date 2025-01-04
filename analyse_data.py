@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import sklearn.preprocessing
 import sklearn.model_selection
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import random
 
