@@ -1,5 +1,6 @@
 /model/*
 !/model/Model.keras
+!/model/Model.tflite
 /history/*
 !/history/Model_history.pkl
 /__pycache__/

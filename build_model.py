@@ -61,6 +61,12 @@ def save_model(model,history,name):
     """
     model.save('model/'+name+'.keras')
 
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    tflite_model = converter.convert()
+
+    with tf.io.gfile.GFile('model/model.tflite', 'wb') as f:
+        f.write(tflite_model)
+
     with open('history/'+name+'_history.pkl', 'wb') as f:
         pickle.dump(history.history, f)
 
